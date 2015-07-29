@@ -1,0 +1,173 @@
+<html ng-app="azulFrotas">
+  <meta content='text/html; charset=utf-8' http-equiv='content-type'>
+    <head>
+      <title>Azul Frotas - ContaAzul company.</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600" media="screen" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="css/azul_frotas.css" type="text/css" />
+    </head>
+
+    <body ng-controller="VehicleController as ctr">
+
+      <nav class="navbar navbar-default navbar-fixed-top navbar-blue">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img src="imgs/logo.png" height="30"></a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Lista de Ve&iacute;culos</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container">
+
+        <div class="jumbotron">
+          <br /><br />
+          <h4 class="sub-header">Veículos na Frota</h4>
+          <div class="row">
+            <div class="col-sm-8">
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAdd">Adicionar novo</button>  
+            </div>
+            <div class="col-sm-2">
+              <select class="form-control" style="font-size: 12px" onchange="$('#search').focus();" ng-model="queryBy">
+                <!--<option value="$">Filtrar por:</option>
+                <option value="modelo">Modelo</option>
+                <option value="placa">Placa</option>-->
+                <option value="marca">Marca</option>
+                <!--<option value="combustivel">Combustível</option>-->
+              </select>
+            </div>
+            <div class="col-sm-2">
+              <input type="search" id="search" class="form-control input-sm" placeholder="" aria-controls="example" ng-model="query[queryBy]" />
+            </div>
+          </div>
+            
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th align="left">Modelo</th>
+                  <th>Placa</th>
+                  <th>Marca</th>
+                  <th>Combust&iacute;vel</th>
+                  <th style="text-align: center">Imagem</th>
+                  <th title="Editar"  class="action-col">Ed.</th>
+                  <th title="Excluir" class="action-col">Ex.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in itens | startFrom:currentPage*pageSize | limitTo:pageSize | filter:query track by $index">
+                  <td>{{ item.modelo }}</td>
+                  <td>{{ item.placa }}</td>
+                  <td>{{ item.marca }}</td>
+                  <td>{{ combustiveis[item.combustivel-1].name }}</td>
+
+                  <td align="center" class="img-col">
+                    <a target="_blank" href="{{item.imagem}}" ng-if="(item.imagem != null) || item.imagem != ''">
+                      <img ng-src="{{item.imagem}}" height="40" />
+                    </a>
+                    <img ng-src="imgs/default.png" ng-if="(item.imagem == null) || item.imagem == ''" />
+
+                  </td>
+                  <td class="action-col">
+                    <a ng-click="edit(item)" class="btn btn-default btn-sm" href="#"><span class="glyphicon glyphicon-pencil"></span></a>
+                  </td>
+                  <td class="action-col">
+                    <a ng-click="remove($index)" class="btn btn-default btn-sm" href="#"><span class="glyphicon glyphicon-trash"></span></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <nav>
+              <ul class="pager">
+                <li><button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">Anterior</button></li>
+                <li>{{currentPage+1}}/{{numberOfPages()}}</li>
+                <li><button ng-disabled="currentPage >= itens.length/pageSize - 1" ng-click="currentPage=currentPage+1">Próxima</button></li>
+              </ul>
+            </nav>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            
+            <form class="panel panel-default" ng-submit="update()" name="vehicleForm">
+
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Adicionar Veículo</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="list-group">
+
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="control-label required" for="marca">Marca *</label>
+                        <input type="text" class="form-control" id="marca" name="marca" placeholder="Informe a marca" ng-model="vel.marca" required>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="control-label required" for="modelo">Modelo *</label>
+                        <input type="text" class="form-control" id="modelo" name="modelo" placeholder="Informe o modelo" ng-model="vel.modelo" required>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="control-label required" for="combustivel">Combustível</label>
+                        <select required class="form-control"
+                            ng-model="vel.combustivel"
+                            ng-options="comb.id as comb.name for comb in combustiveis">
+                            <option style="display:none; color: #ccc" value="">Selecione um combustível</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="control-label required" for="placa">Placa*</label>
+                        <input type="text" class="form-control" id="placa" name="placa" placeholder="Informe a placa" ng-model="vel.placa" required>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="control-label required" for="imagem">Imagem</label>
+                        <input type="url" class="form-control" id="imagem" name="imagem" ng-model="vel.imagem" placeholder="Informe a URL">
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/controllers/VehicleController.js"></script>
+</html>

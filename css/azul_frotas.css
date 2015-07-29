@@ -1,0 +1,69 @@
+body {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+.jumbotron { background-color: #fff; } 
+
+.navbar-brand {
+  padding: 8px 15px;
+}
+
+.navbar-blue {
+  background-color: #0085E6;
+  color: white;
+}
+
+.navbar-default .navbar-brand {
+  color: white;
+}
+
+.navbar-default .navbar-brand:hover {
+  background-color: #0078cf;
+  color: white;
+}
+
+.navbar-default .navbar-nav>.active>a, 
+.navbar-default .navbar-nav>.active>a:focus, 
+.navbar-default .navbar-nav>.active>a:hover {
+  background-color: #0078cf;
+  color: white;
+}
+
+.table-striped tr th, .table-striped tr td {
+  font-size: 0.8em;
+}
+
+.table-striped tbody tr { cursor: pointer; }
+
+.action-col {
+  padding-left: 0 !important;
+  padding-right: 8px !important;
+  width: 40px;
+  text-align: center;
+}
+
+.pager button {
+  display: inline-block;
+  padding: 5px 14px;
+  background-color: #fff;
+  border: 1px solid #03A9F4;
+  color: #03A9F4;
+  border-radius: 15px;
+  margin: 0 10px;
+}
+
+.pager button:hover {
+  background-color: #03A9F4;
+  color: white;
+}
+
+.pager button[disabled=disabled], .pager button[disabled=disabled]:hover {
+  color: #ddd !important;
+  border-color: #ddd;
+  background-color: white;
+}
+
+.filter-table { float: right; text-align: right; }
+
+.ng-invalid-required.ng-touched { border: 1px solid tomato; }
